@@ -1,6 +1,9 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'gatsby'
+import { render } from 'react-dom'
+
+import netlifyIdentity from 'netlify-identity-widget'
 
 const isActive = ({ isCurrent }) => {
   return { className: isCurrent ? 'active' : 'navlink' }
@@ -8,14 +11,21 @@ const isActive = ({ isCurrent }) => {
 
 const NavLink = props => <Link getProps={isActive} {...props} />
 
-const Header = ({ siteTitle }) => (
-  <header
-    style={{
-      background: `rebeccapurple`,
-      marginBottom: `1.45rem`,
-    }}
-  >
-    <div
+class Header extends React.Component {
+
+  componentDidMount() {
+    netlifyIdentity.init()
+  }
+  render() {
+    const { siteTitle } = this.props
+    return (
+      <div
+        style={{
+          background: `rebeccapurple`,
+          marginBottom: `1.45rem`,
+        }}
+      >
+      <div
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -41,6 +51,8 @@ const Header = ({ siteTitle }) => (
 
       <NavLink to="/blog">Blog</NavLink>
       <NavLink to="/products">Store</NavLink>
+
+      <div data-netlify-identity-menu></div>
       
       { /* Shopping Cart Summary */ }
       <div style={{ color: 'white', cursor: 'pointer' }} className="snipcart-summary snipcart-checkout">
@@ -49,8 +61,10 @@ const Header = ({ siteTitle }) => (
         <div>Total price{' '}<span style={{ fontWeight: 'bold' }} className="snipcart-total-price"></span></div>
       </div>
     </div>
-  </header>
-)
+      </div>
+    )
+  }
+}
 
 Header.propTypes = {
   siteTitle: PropTypes.string,
